@@ -28,11 +28,11 @@ type Repository struct {
 
 // Create a new consignment
 func (repo *Repository) Create(consignment *pb.Consignment) (*pb.Consignment, error) {
-	repo.mu.Loc()
+	repo.mu.Lock()
 	updated := append(repo.consignments, consignment)
 	repo.consignments = updated
 	repo.mu.Unlock()
-	return consignment, nill
+	return consignment, nil
 }
 
 type service struct {
@@ -58,7 +58,7 @@ func main() {
 	// Set-up our gRPC server.
 	lis, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Fatelf("failed to listen: %v", err)
+		log.Fatalf("failed to listen: %v", err)
 	}
 
 	s := grpc.NewServer()
@@ -69,6 +69,6 @@ func main() {
 
 	log.Println("Running on port: ", port)
 	if err := s.Serve(lis); err != nil {
-		log.Fatelf("failed to serve: %v", err)
+		log.Fatalf("failed to serve: %v", err)
 	}
 }
